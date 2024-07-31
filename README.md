@@ -8,6 +8,7 @@ Aseprite script to visualize GBC screen during asset creation.
 
 # Usage
 **1. Open the sprite you want to visualize**
+
 **2. Run script from the Aseprite menu**
    
 ![image](https://github.com/user-attachments/assets/fd89f3bf-2fe1-4c78-8afd-3e8575941bf7)
