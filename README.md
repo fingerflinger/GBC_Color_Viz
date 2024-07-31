@@ -4,6 +4,7 @@ Aseprite script to visualize GBC screen during asset creation.
 **1. Just move the following two files to your Aseprite script directory:**
  - gbcScreenVisualization.lua
  - gbc_sRGB_scaled.csv
+
 **2. That's it!**
 
 # Usage
@@ -32,9 +33,8 @@ Aseprite script to visualize GBC screen during asset creation.
 
 # Miscellaneous 
 - The gbc_sRGB_scaled.csv file is a conversion from RGB input values (loaded into GBC palettes on-device [0,31]), in columns 1-3, to sRGB, in columns 4-6
-- The values come from measurements of the GBC display from a display characterization lab, but to make them useful for this visualization, I've increased the Luminosity before converting to sRGB. This is somewhat arbitrary, and in the future, it might be useful to let the user adjust that value
+- To make the color measurments useful for this visualization, I've increased the Luminosity before converting to sRGB. This is somewhat arbitrary, and in the future, it might be useful to let the user adjust that value. Chromaticity is preserved
 - Most users won't be viewing this on a calibrated sRGB display, and so the most important takeaway during use is to consider the relationship of the colors to each other. And to view in-device as often as possible!
 - A portion of the GBC display gamut is outside of sRGB, and so most consumer monitors cannot physically display a range of the GBC colorspace (the portion of the green triangle that is outside of the dashed triangle). Be aware that this range of colors should be viewed in-device!
 
-  
 ![image](https://github.com/user-attachments/assets/afde2477-3bcd-40ce-bea4-8769df286585)
