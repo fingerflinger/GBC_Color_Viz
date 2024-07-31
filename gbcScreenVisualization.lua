@@ -15,42 +15,35 @@ function getPalette()
     local act_pal = spr.palettes[1]
     local pal = Palette()
     app.command.ColorQuantization {
-    ui = false,
-    withAlpha = true,
-    maxColors = 256, -- 64 colors max actually, between bkg palettes and sprite palettes
-    useRange = false,
-    algorithm = 0 -- 0 default, 1 RGB table, 2 octree
+        ui = false,
+        withAlpha = true,
+        maxColors = 256, -- 64 colors max actually, between bkg palettes and sprite palettes
+        useRange = false,
+        algorithm = 0 -- 0 default, 1 RGB table, 2 octree
     }
     sRGB_gbc = {}
-    use_pal = {}        -- NOT a palette object, so indexes from 1, len
     lookup_pal = {}     -- NOT a palette object, so indexes from 1, len
     new_pal = act_pal
     -- For some godforsaken reason, palettes index from 0, len-1, unlike everything else
     for _i = 0, #new_pal-1 do
         local c = new_pal:getColor(_i)
-        if c.alpha ~= 0 then
+        if c.alpha ~= 0 then -- ignore non-opaque pixels
             local pc = c.rgbaPixel
-            table.insert(use_pal, c)
             table.insert(lookup_pal, pc)
 
             -- Get colorspace conversion for GBC
-            -- apply correction matrix to pc before converting to sRGB
-
-            local R = app.pixelColor.rgbaR
-            local G = app.pixelColor.rgbaG
-            local B = app.pixelColor.rgbaB
-
-            table.insert(sRGB_gbc,           sRGBfromRGB(pc, gbc_colorspace))
+            table.insert(sRGB_gbc, sRGBfromRGB(pc, gbc_colorspace))
         end
     end
 end
 
 function refresh_dlg()
-    getPalette()
+    getPalette() -- reindex all colors in the sprite on repaint
     dlg:repaint()
 end
 
 function runScript(gbc_fname)
+    -- Load colorspace from file
     local file = io.open(gbc_fname)
     local n = 0
     for line in io.lines(gbc_fname) do
@@ -75,7 +68,6 @@ function runScript(gbc_fname)
         return app.alert("This script requires Aseprite v1.2.10-beta3")
     end
 
-    use_pal = {}
     lookup_pal = {}
 
     -- Create Dialog, draw image on it, and get palette of colors in the current sprite
@@ -105,10 +97,10 @@ function runScript(gbc_fname)
             local G = app.pixelColor.rgbaG
             local B = app.pixelColor.rgbaB
 
-            -- replace color
+            -- Replace colors from active sprite with visualization colorspace
             if preview.colorMode == ColorMode.RGB then
                 for it in preview:pixels() do
-                    local val = it() -- Get pixel value from image
+                    local val = it() -- Get value of current pixel
 
                     -- Find matching color in the palette and replace with sRGB of target colorspace
                     for _k = 1, #lookup_pal do
@@ -136,6 +128,7 @@ function runScript(gbc_fname)
     end)
 end
 
+-- Script Entry Point
 gbc_colorspace = {}
 local gbc_fname = app.fs.joinPath(app.fs.userConfigPath, "scripts/gbc_sRGB_scaled.csv");
 
