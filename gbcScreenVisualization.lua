@@ -11,27 +11,32 @@ function sRGBfromRGB(rgb_in, colorspace)
 end
 
 function getPalette()
-    local spr = app.activeSprite
-    local act_pal = spr.palettes[1]
-    app.command.ColorQuantization { -- Calling this inside an event callback is crashing Aseprite. So let's build our own palette
-        ui = false,
-        withAlpha = true,
-        maxColors = 256,
-        useRange = false,
-        algorithm = 0
-    }
-    sRGB_gbc = {}
-    lookup_pal = {}     -- NOT a palette object, so indexes from 1, len
-    -- For some godforsaken reason, palettes index from 0, len-1, unlike everything else
-    for _i = 0, #act_pal-1 do
-        local c = act_pal:getColor(_i)
-        if c.alpha ~= 0 then -- ignore non-opaque pixels
-            local pc = c.rgbaPixel
-            table.insert(lookup_pal, pc)
-
-            -- Get colorspace conversion for GBC
-            table.insert(sRGB_gbc, sRGBfromRGB(pc, gbc_colorspace))
+    local preview = Image(app.sprite)
+    local act_pal = {}
+    for it in preview:pixels() do
+        local val = it() -- Get value of current pixel
+        local foundColor = false
+        for _k = 1, #act_pal do
+            if val == act_pal[_k] then
+                foundColor = true
+                break -- Should also skip the rest of the inner loop
+            end
         end
+        if foundColor == false then
+            -- Add new color to the palette
+            table.insert(act_pal, val)
+        end
+    end
+    sRGB_gbc = {}
+    lookup_pal = {}
+    for _i = 1, #act_pal do
+        local rgbaA = app.pixelColor.rgbaA
+        local pc = act_pal[_i]
+
+        table.insert(lookup_pal, pc)
+        -- Get colorspace conversion for GBC
+        local gbc_color = sRGBfromRGB(pc, gbc_colorspace)
+        table.insert(sRGB_gbc, sRGBfromRGB(pc, gbc_colorspace))
     end
 end
 
@@ -66,6 +71,8 @@ for line in io.lines(gbc_fname) do
     n = n+1
 end
 file:close()
+
+spr = app.activeSprite
 
 lookup_pal = {}
 
@@ -117,11 +124,8 @@ dlg:canvas {
 }
 dlg:show{wait=false}
 
-spr = app.activeSprite
 spr.events:on("change", function(ev)
-    if ev and not ev.fromUndo then
-        getPalette()
-        dlg:repaint()
-    end
+    getPalette()
+    dlg:repaint()
 end)
 
