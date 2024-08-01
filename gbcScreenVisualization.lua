@@ -13,6 +13,13 @@ end
 function getPalette()
     local spr = app.activeSprite
     local act_pal = spr.palettes[1]
+    app.command.ColorQuantization { -- Calling this inside an event callback is crashing Aseprite. So let's build our own palette
+        ui = false,
+        withAlpha = true,
+        maxColors = 256,
+        useRange = false,
+        algorithm = 0
+    }
     sRGB_gbc = {}
     lookup_pal = {}     -- NOT a palette object, so indexes from 1, len
     -- For some godforsaken reason, palettes index from 0, len-1, unlike everything else
@@ -28,13 +35,6 @@ function getPalette()
     end
 end
 
-function refresh_dlg()
-    getPalette() -- reindex all colors in the sprite on repaint
-    dlg:repaint()
-end
-
-function runScript(fname)
-end
 -- Script Entry Point
 gbc_colorspace = {}
 local gbc_fname = app.fs.joinPath(app.fs.userConfigPath, "scripts/gbc_sRGB_scaled.csv");
@@ -119,7 +119,9 @@ dlg:show{wait=false}
 
 spr = app.activeSprite
 spr.events:on("change", function(ev)
-    getPalette()
-    dlg:repaint()
+    if ev and not ev.fromUndo then
+        getPalette()
+        dlg:repaint()
+    end
 end)
 
