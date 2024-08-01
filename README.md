@@ -42,4 +42,5 @@ Aseprite script to visualize GBC screen during asset creation.
 
 
 ## Known Issues
-- There is a class of bug in Aseprite's scripting API where certain keyboard shortcuts will interact with Sprite.Event and cause the software to crash. So far, I have encountered (and "fixed") this behavior for Undo `Cmd+Z`. Let me know if you find others. There is also a case where Copy/Pasting via keyboard shortcuts and then saving via keyboard shortcut with the script open will cause it to crash. I am currently looking for a fix...
+- There is a class of bug in Aseprite's scripting API where certain keyboard shortcuts will interact with Sprite.Event and cause the software to crash. So far, I have encountered (and "fixed") this behavior for Undo `Cmd+Z`. Let me know if you find others.
+- There is a case where Copy/Pasting via keyboard shortcuts and then saving via keyboard shortcut with the script open will cause it to crash. I am currently looking for a fix...
