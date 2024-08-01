@@ -39,8 +39,3 @@ Aseprite script to visualize GBC screen during asset creation.
 - A portion of the GBC display gamut is outside of sRGB, and so most consumer monitors cannot physically display a range of the GBC colorspace (the portion of the green triangle that is outside of the dashed triangle). Be aware that this range of colors should be viewed in-device!
 
 ![image](https://github.com/user-attachments/assets/afde2477-3bcd-40ce-bea4-8769df286585)
-
-
-## Known Issues
-- There is a class of bug in Aseprite's scripting API where certain keyboard shortcuts will interact with Sprite.Event and cause the software to crash. So far, I have encountered (and "fixed") this behavior for Undo `Cmd+Z`. Let me know if you find others.
-- There is a case where Copy/Pasting via keyboard shortcuts and then saving via keyboard shortcut with the script open will cause it to crash. I am currently looking for a fix...
