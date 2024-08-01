@@ -122,8 +122,7 @@ function runScript(gbc_fname)
     spr.events:on("change", function(ev)
         -- Refreshing dlg from an undo event crashes Aseprite for some reason :(
         -- So we can't redraw on an undo for right now
-        if ev and not ev.fromUndo and not ev.name == "filenamechange" then
-            print(ev.name)
+        if ev and not ev.fromUndo then
             refresh_dlg()
         end
     end)
