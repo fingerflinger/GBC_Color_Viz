@@ -43,11 +43,20 @@ end
 function enumeratePalettes()
     -- Need to get tileset
     local lay = app.activeLayer
-	if not lay.isTilemap then return app.alert "No active tilemap layer" end
+	if not lay.isTilemap then
+        return app.alert "No active tilemap layer"
+    end
 
-	local tileset = lay.tileset
-    print(tileset)
     -- Then loop over each tile and look at the colors
+    local ts = lay.tileset
+    local len = ts:__len()
+    for i = 1, 1, len do
+        local tile_im = ts:tile(i).image
+        for _p in tile_im:pixels() do
+            print(_p())
+        end
+        return
+    end
 end
 
 -- Script Entry Point
