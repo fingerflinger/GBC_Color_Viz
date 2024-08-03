@@ -47,15 +47,34 @@ function enumeratePalettes()
         return app.alert "No active tilemap layer"
     end
 
+    local R = app.pixelColor.rgbaR
+    local G = app.pixelColor.rgbaG
+    local B = app.pixelColor.rgbaB
+
+    palette_list = {}
     -- Then loop over each tile and look at the colors
     local ts = lay.tileset
     local len = ts:__len()
-    for i = 1, 1, len do
+    for i = 1, len, 1 do
+        local unique_colors = {}
+        -- For each tile, store unique colors
+            -- If unique colors greater than 4, warn user
+            -- Else, check if this combo of 4 colors is already in our palette list
+            -- If not, add it to our palette_list
         local tile_im = ts:tile(i).image
         for _p in tile_im:pixels() do
-            print(_p())
+            local is_unique = true
+            for k = 1, #unique_colors, 1 do
+                if _p() == unique_colors[k] then
+                    is_unique = false
+                    break
+                end
+            end
+            if (is_unique) then
+                table.insert(unique_colors, _p())
+                print(string.format("%d, %d, %d", R(_p()), G(_p()), B(_p())))
+            end
         end
-        return
     end
 end
 
