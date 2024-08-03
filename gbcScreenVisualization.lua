@@ -40,6 +40,16 @@ function getPalette()
     end
 end
 
+function enumeratePalettes()
+    -- Need to get tileset
+    local lay = app.activeLayer
+	if not lay.isTilemap then return app.alert "No active tilemap layer" end
+
+	local tileset = lay.tileset
+    print(tileset)
+    -- Then loop over each tile and look at the colors
+end
+
 -- Script Entry Point
 gbc_colorspace = {}
 local gbc_fname = app.fs.joinPath(app.fs.userConfigPath, "scripts/gbc_sRGB_scaled.csv");
@@ -122,6 +132,11 @@ dlg:canvas {
         gc: drawImage(preview, 0, 0)
     end -- end function onpaint()
 }
+dlg:newrow()
+dlg:button{ id="enum_button",
+            label="",
+            text="Enumerate Palettes",
+            onclick=enumeratePalettes}
 dlg:show{wait=false}
 
 spr.events:on("change", function(ev)
